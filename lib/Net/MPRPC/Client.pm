@@ -35,10 +35,8 @@ sub connect {
     my $host = $args->{host} || $self->{host};
     my $port = $args->{post} || $self->{port};
 
-    croak q[Required "host" parameter to connect]
-        unless $args->{host};
-    croak q[Required "port" parameter to connect]
-        unless $args->{port};
+    croak q[Required "host" parameter to connect] unless $host;
+    croak q[Required "port" parameter to connect] unless $port;
 
     my $sock;
     try {
