@@ -20,11 +20,9 @@ SYNOPSIS
             or die $client->error;
 
 DESCRIPTION
-    Stub documentation for this module was created by ExtUtils::ModuleMaker.
-    It looks like the author of the extension was negligent enough to leave
-    the stub unedited.
-
-    Blah blah blah.
+    This module is a simple synchronous MessagePack-RPC client, designed to
+    use in synchronous application (e.g. prefork server) For asynchronous
+    version of this module, take a look at AnyEvent::MPRPC::Client.
 
 METHODS
   new(%parameters)
@@ -62,14 +60,14 @@ METHODS
 
     If remote server return some errors, this method return undef. You can
     get error message by "error" method. When something other error (network
-    error or etc) occured, this method throw exception.
+    error or etc) occurred, this method throw exception.
 
   error()
     Return error messages. Return empty string when there's no error.
 
   connect
   disconnect
-    Connect and disconnect to/from server. This method automatically called
+    Connect to and disconnect from server. This method automatically called
     from "call" method.
 
 AUTHOR

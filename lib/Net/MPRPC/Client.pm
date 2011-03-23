@@ -152,7 +152,7 @@ sub error {
 
 __END__
 
-=for stopwords MessagePack RPC MessagePack-RPC Str hostname unix
+=for stopwords MessagePack RPC MessagePack-RPC Str hostname unix prefork
 
 =head1 NAME
 
@@ -179,7 +179,7 @@ Net::MPRPC::Client - Synchronous MessagePack RPC client
 
 =head1 DESCRIPTION
 
-This module is a simple synchronous MessagePack-RPC client, designed to use in synchronous application (eg. prefork server)
+This module is a simple synchronous MessagePack-RPC client, designed to use in synchronous application (e.g. prefork server)
 For asynchronous version of this module, take a look at L<AnyEvent::MPRPC::Client>.
 
 =head1 METHODS

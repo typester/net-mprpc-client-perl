@@ -1,4 +1,4 @@
 Revision history for Perl extension Net::MPRPC::Client
 
-  0.01  Wed Feb 17 11:35:50 2010
-        - original version
+0.01  2011-03-23T12:43:37+09:00
+      - initial version
