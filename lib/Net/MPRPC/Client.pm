@@ -6,7 +6,11 @@ our $VERSION = '0.01';
 
 use IO::Select;
 use IO::Socket::INET;
-use IO::Socket::UNIX;
+
+our $_HAVE_UNIX_SOCKET = 1;
+eval q[use IO::Socket::INET; 1];
+if ($@) { $_HAVE_UNIX_SOCKET = 0 }
+
 use Try::Tiny;
 use Carp;
 use Data::MessagePack;
@@ -41,6 +45,10 @@ sub connect {
     my $sock;
     try {
         if ($host eq 'unix/') {
+            if (!$_HAVE_UNIX_SOCKET) {
+                croak "This environment doesn't support UNIX socket";
+            }
+
             $sock = IO::Socket::UNIX->new(
                 Peer    => $port,
                 Timeout => $self->{timeout},
@@ -144,6 +152,8 @@ sub error {
 
 __END__
 
+=for stopwords MessagePack RPC MessagePack-RPC Str hostname unix
+
 =head1 NAME
 
 Net::MPRPC::Client - Synchronous MessagePack RPC client
@@ -169,11 +179,63 @@ Net::MPRPC::Client - Synchronous MessagePack RPC client
 
 =head1 DESCRIPTION
 
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
+This module is a simple synchronous MessagePack-RPC client, designed to use in synchronous application (eg. prefork server)
+For asynchronous version of this module, take a look at L<AnyEvent::MPRPC::Client>.
 
-Blah blah blah.
+=head1 METHODS
+
+=head2 new(%parameters)
+
+    my $client = Net::MPRPC::Client->new(
+        host => '127.0.0.1',
+        port => 4423,
+    );
+    
+    # or unix socket:
+    my $client = Net::MPRPC::Client->new(
+        host => 'unix/',
+        port => '/tmp/mprpc.sock',
+    );
+
+Create and return client object.
+Available parameters are:
+
+=over 4
+
+=item * host => 'Str' (Required)
+
+MessagePack-RPC server's hostname to connect.
+If you want to use unix domain socket, this parameter should be "unix/".
+
+=item * port => 'Int | Str' (Required)
+
+MessagePack-RPC server's port or UNIX socket path to connect.
+
+=item * timeout => 'Int'
+
+Timeout (second) to connect. Default value is 30 seconds.
+
+=back
+
+=head2 call($method, $parameter)
+
+    my $res = $client->call( echo => "foo bar" )
+        or die $client->error;
+
+Call RPC method and return result.
+
+If remote server return some errors, this method return undef. You can get error message by C<error> method.
+When something other error (network error or etc) occurred, this method throw exception.
+
+=head2 error()
+
+Return error messages. Return empty string when there's no error.
+
+=head2 connect
+
+=head2 disconnect
+
+Connect to and disconnect from server. This method automatically called from C<call> method.
 
 =head1 AUTHOR
 
@@ -181,7 +243,7 @@ Daisuke Murase <typester@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2010 by KAYAC Inc.
+Copyright (c) 2011 by KAYAC Inc.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
