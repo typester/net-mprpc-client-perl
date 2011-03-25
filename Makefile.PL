@@ -9,6 +9,7 @@ requires 'Data::MessagePack' => '0.08';
 requires 'Try::Tiny';
 
 test_requires 'Test::More' => '0.88';
+test_requires 'Test::TCP' => '1.12';
 
 author_tests('xt');
 
